@@ -20,24 +20,21 @@ SPRITE_POS = 20
 class App(ShowBase):
   def __init__(self):
     ShowBase.__init__(self)
-    self.entities = dict()
-    self.entities["player"] = Player(self)
-    self.entities["player"].initialise()
+
+    self.world = World(self)
 
     self.taskMgr.add(self.update, "update")
-    #self.taskMgr.add(self.mouseCap, "mouseCap")
-    self.bg = self.loadObject(tex = "stars", scaleX = 200, scaleY = 200, depth = 100, transparency = False)
 
-    self.accept("a", self.entities["player"].moveLeft, [True])
-    self.accept("a-up", self.entities["player"].moveLeft, [False])
+    self.accept("a", self.world.player.moveLeft, [True])
+    self.accept("a-up", self.world.player.moveLeft, [False])
 
-    self.accept("d", self.entities["player"].moveRight, [True])
-    self.accept("d-up", self.entities["player"].moveRight, [False])
+    self.accept("d", self.world.player.moveRight, [True])
+    self.accept("d-up", self.world.player.moveRight, [False])
 
-    self.accept("space", self.entities["player"].jump, [])
-    self.accept("c", self.entities["player"].crouch, [])
+    self.accept("space", self.world.player.jump, [])
+    self.accept("c", self.world.player.crouch, [])
 
-    self.accept("mouse1", self.entities["player"].activate, [])
+    self.accept("mouse1", self.world.player.activate, [])
 
     self.accept("escape", sys.exit, [])
 
@@ -47,7 +44,6 @@ class App(ShowBase):
 
     self.rl = base.camLens.makeCopy()
 
-    self.world = World(self)
 
 
   def update(self, task):
@@ -58,8 +54,8 @@ class App(ShowBase):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
       self.mousePos.y = self.mouseWatcherNode.getMouseY()
 
-    for entity in self.entities:
-      self.entities[entity].update(delta)
+    self.world.update(delta)  
+
     return Task.cont
 
   def mouseCap(self, task):

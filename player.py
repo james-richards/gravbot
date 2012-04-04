@@ -1,5 +1,5 @@
 from entity import Entity
-from panda3d.core import Point2, Point3, NodePath
+from panda3d.core import Point2, Point3, NodePath, BoundingBox
 from items import Blowtorch, LightLaser, Grenade
 from math import atan2, degrees, sin, cos
 
@@ -16,7 +16,7 @@ class Player(Entity):
     def __init__(self, app):
 	super(Player, self).__init__()
 
-	self.obj = app.loadObject("player", scale = 1)
+	self.obj = app.loadObject("player", scale = 4, depth = 55)
         self.app = app
         self.health = 100
         self.inventory = dict()
@@ -100,6 +100,12 @@ class Player(Entity):
 	  self.location.x = -99
 
         self.obj.setPos(self.location.x, self.depth, self.location.y)
+
+	bbt = self.obj.getTightBounds()
+	self.bb = BoundingBox(bbt[0], bbt[1])
+
+	print "playerpos: " + str(self.obj.getPos())
+	print "playerbb" + str(self.bb)
 	
     def moveLeft(self, switch):
         self.leftMove = switch 
