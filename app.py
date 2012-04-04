@@ -35,6 +35,7 @@ class App(ShowBase):
     self.accept("d-up", self.entities["player"].moveRight, [False])
 
     self.accept("space", self.entities["player"].jump, [])
+    self.accept("c", self.entities["player"].crouch, [])
 
     self.accept("mouse1", self.entities["player"].activate, [])
 

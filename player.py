@@ -53,7 +53,6 @@ class Player(Entity):
         if (self.rightMove):
             self.velocity.x = self.velocity.x + self.walkspeed 
         
-        self.obj.setPos(self.location.x + timer*self.velocity.x, self.depth, self.location.y+timer*self.velocity.y)
         self.location = Point2(self.location.x + timer*self.velocity.x, self.location.y+timer*self.velocity.y)
 
 	self.velocity = Point2(self.velocity.x*self.damping, self.velocity.y*self.damping)
@@ -91,9 +90,16 @@ class Player(Entity):
 	gunVector = Point2(cos(angle)*gunLength - self.armNode.getX()*5, sin(angle)*gunLength - self.armNode.getZ()*2)
 	armAngle = atan2(gunVector.y, gunVector.x)
 	self.arm.setHpr(self.armNode, 0, 0, -1 * degrees(armAngle))
-	
-	print self.location
 
+	#Basic rail collision
+	if (self.location.y > 4.6):
+	  self.location.y = 4.6
+	if (self.location.y < -5.0):
+	  self.location.y = -5.0
+	if (self.location.x < -99):
+	  self.location.x = -99
+
+        self.obj.setPos(self.location.x, self.depth, self.location.y)
 	
     def moveLeft(self, switch):
         self.leftMove = switch 
@@ -108,3 +114,9 @@ class Player(Entity):
 	if self.velocity.y < -self.topspeed:
 	  self.velocity.y = -self.topspeed
 
+    def crouch(self):
+        self.velocity.y -= 5
+	if self.velocity.y > self.topspeed:
+	  self.velocity.y = self.topspeed
+	if self.velocity.y < -self.topspeed:
+	  self.velocity.y = -self.topspeed
