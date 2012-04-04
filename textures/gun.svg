@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="90"
+   height="30"
+   id="svg4111"
+   version="1.1"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="gun.png">
+  <defs
+     id="defs4113" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.4748737"
+     inkscape:cx="31.414038"
+     inkscape:cy="14.162688"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="472"
+     inkscape:window-height="415"
+     inkscape:window-x="790"
+     inkscape:window-y="24"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata4116">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(0,-18)">
+    <image
+       y="15.878831"
+       x="4.5710921"
+       id="image4074"
+       xlink:href="file:///home/mike/Downloads/ak47t.png"
+       height="34.999996"
+       width="77.645042" />
+    <rect
+       style="fill:#ff9300;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4077"
+       width="5"
+       height="10"
+       x="39.571949"
+       y="7.4870257"
+       transform="matrix(0.81752334,0.57589547,-0.57589547,0.81752334,0,0)" />
+    <rect
+       style="fill:#ff9300;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4079"
+       width="25.001276"
+       height="8.4600277"
+       x="-5.0106125"
+       y="27.94348"
+       transform="matrix(0.97255721,-0.23266388,0.23266388,0.97255721,0,0)" />
+    <rect
+       style="fill:#909394;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4083"
+       width="20.581858"
+       height="5.6821079"
+       x="42.290855"
+       y="-27.714489"
+       transform="matrix(0.42555609,0.90493205,-0.90493205,0.42555609,0,0)" />
+    <rect
+       style="fill:#909394;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4081"
+       width="23.612316"
+       height="9.5964489"
+       x="26.386839"
+       y="21.908615" />
+    <rect
+       style="fill:#909337;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4085"
+       width="12.121831"
+       height="5.5558391"
+       x="50.377956"
+       y="23.80266" />
+    <rect
+       style="fill:#909337;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4091"
+       width="2.3997304"
+       height="8.0818386"
+       x="78.346252"
+       y="20.708786" />
+    <rect
+       style="fill:#909337;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect4089"
+       width="18.309015"
+       height="3.4092648"
+       x="62.752338"
+       y="25.822983" />
+  </g>
+</svg>
