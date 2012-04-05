@@ -90,12 +90,14 @@ class Chunk():
       res = self.player.bb.contains(ebb)
       if res != 0:
         print res
-	print "ebb " + str(ebb)
+	print "ebb    " + str(ebb)
+	print "player " + str(self.player.bb)
         # get angle between player and object
 	et = entity.obj.getPos()
 	e = Point2(et.x, et.z)
 	p = self.player.location
 	self.player.velocity += p - e
+	self.player.location = self.player.prevloc
 
   def addEntity(self, entity):
     self.entities.append(entity)

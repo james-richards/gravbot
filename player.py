@@ -47,6 +47,7 @@ class Player(Entity):
         self.currentItem.activate()
 
     def update(self, timer):
+        self.prevloc = self.location
 
         if (self.leftMove):
             self.velocity.x = self.velocity.x - self.walkspeed
@@ -103,8 +104,9 @@ class Player(Entity):
 
         self.obj.setPos(self.location.x, self.depth, self.location.y)
 
-	bbt = self.obj.getTightBounds()
-	self.bb = BoundingBox(bbt[0], bbt[1])
+        bbmin = Point3(self.location.x - 1, self.depth - 1, self.location.y - 2)
+	bbmax = Point3(self.location.x + 1, self.depth + 1, self.location.y + 2)
+	self.bb = BoundingBox(bbmin, bbmax)
 
     def moveLeft(self, switch):
         self.leftMove = switch 
