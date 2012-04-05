@@ -70,6 +70,8 @@ class Player(Entity):
         pos2d = Point3()
         base.rl.project(self.obj.getPos(base.camera), pos2d)
 
+        #print pos2d
+
 
         if(mouse.x - pos2d.x != 0):
 	  angle = atan2((mouse.y - pos2d.y) , (mouse.x)) 
@@ -87,26 +89,23 @@ class Player(Entity):
 
 	gunLength = 2.0
 
-	gunVector = Point2(cos(angle)*gunLength - self.armNode.getX()*5, sin(angle)*gunLength - self.armNode.getZ()*2)
-	armAngle = atan2(gunVector.y, gunVector.x)
+        self.gunVector = Point2(cos(angle)*gunLength - self.armNode.getX()*5, sin(angle)*gunLength - self.armNode.getZ()*2)
+	armAngle = atan2(self.gunVector.y, self.gunVector.x)
 	self.arm.setHpr(self.armNode, 0, 0, -1 * degrees(armAngle))
 
 	#Basic rail collision
-	if (self.location.y > 4.6):
-	  self.location.y = 4.6
-	if (self.location.y < -5.0):
-	  self.location.y = -5.0
-	if (self.location.x < -99):
-	  self.location.x = -99
+	#if (self.location.y > 4.6):
+	#  self.location.y = 4.6
+	#if (self.location.y < -5.0):
+	#  self.location.y = -5.0
+	#if (self.location.x < -99):
+	#  self.location.x = -99
 
         self.obj.setPos(self.location.x, self.depth, self.location.y)
 
 	bbt = self.obj.getTightBounds()
 	self.bb = BoundingBox(bbt[0], bbt[1])
 
-	print "playerpos: " + str(self.obj.getPos())
-	print "playerbb" + str(self.bb)
-	
     def moveLeft(self, switch):
         self.leftMove = switch 
 

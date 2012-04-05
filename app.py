@@ -41,6 +41,7 @@ class App(ShowBase):
     self.prevTime = 0
 
     self.mousePos = Point2()
+    base.disableMouse()
 
     self.rl = base.camLens.makeCopy()
 
@@ -53,7 +54,6 @@ class App(ShowBase):
     if(base.mouseWatcherNode.hasMouse()):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
       self.mousePos.y = self.mouseWatcherNode.getMouseY()
-
     self.world.update(delta)  
 
     return Task.cont

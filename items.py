@@ -1,5 +1,6 @@
-from math import degrees
+from math import degrees, sin, cos
 from panda3d.core import Point2
+from entity import Entity
 
 
 class Item(object):
@@ -27,52 +28,77 @@ class Item(object):
     self.obj.hide()
     return True
 
+# The thing you hold
 class Blowtorch(Item):
   def __init__(self, app, player):
     super(Blowtorch, self).__init__(app, player)
     self.obj = app.loadObject("blowtorch", scaleX = 1, scaleY = 1, depth = -0.2)
     self.obj.hide()
 
-    self.flame1 = app.loadObject("torchflame1", pos=Point2(1,0.01),scaleX = 1, scaleY = 0.125, depth = -0.1)
-    self.flame2 = app.loadObject("torchflame2", pos=Point2(1,0.01),scaleX = 1, scaleY = 0.125, depth = -0.1)
-    self.flame3 = app.loadObject("torchflame3", pos=Point2(1,0.01),scaleX = 1, scaleY = 0.125, depth = -0.1)
-    self.curFlame = 1
-    self.flameHidden = True
-    self.flame1.reparentTo(self.obj)
-    self.flame2.reparentTo(self.obj)
-    self.flame3.reparentTo(self.obj)
-    self.flame1.hide()
-    self.flame2.hide()
-    self.flame3.hide()
-    self.delta = 0
-    self.changeAfter = 0.3 
-
   def activate(self):
-    if (self.flameHidden):
-      self.flame1.show()
-      self.flameHidden = False
-    else: 
-      self.flame1.hide()  
-      self.flame2.hide()  
-      self.flame3.hide()  
-      self.flameHidden = True
+    #add a flame projectile
+    self.app.world.addEntity(Flame(self.app, self.obj.getPos(self.app.render), self.obj.getHpr()))
     return True
 
   def update(self, timer):
     self.obj.setHpr(self.player.obj, 0, 0, -1 * degrees(self.player.angle))
-    self.delta += timer
-    if self.delta > self.changeAfter:
-      self.curFlame += 1
-      if (self.curFlame == 4):
-        self.curFlame = 1
 
-      self.flame1.hide()
-      self.flame2.hide()
-      self.flame3.hide()
+# The thing that comes out the end
+class Flame(Entity):
+  animspeed = 0.1 
+  depth = 50
+  playerWidth = 3
+  speed = 40
+  def __init__(self, app, pos, hpr):
+    super(Flame, self).__init__()
 
-      if not self.flameHidden: getattr(self, "flame" + str(self.curFlame)).show()
-      self.delta = 0
+    self.anim = list()
+    self.anim.append(app.loadObject("flame1", depth=Flame.depth))
+    self.anim.append(app.loadObject("flame2", depth=Flame.depth))
+    self.anim.append(app.loadObject("flame3", depth=Flame.depth))
+
+    for a in self.anim:
+      a.hide()
+
+    self.app = app
+    self.curspr = 0
+    self.obj = self.anim[self.curspr]
+    self.obj.show() 
+    self.delta = 0
+
+    self.pos = pos
+    self.pos.y = Flame.depth
+    self.hpr = hpr
+    self.vel = Point2()
+    self.vel.x = cos(app.world.player.angle)*Flame.speed
+    self.vel.y = sin(app.world.player.angle)*Flame.speed
     
+    #self.pos.x += 4  
+    #self.pos.z += 2
+    self.pos.x = self.vel.x / Flame.speed * 2+ self.pos.x
+    self.pos.z = self.vel.y / Flame.speed * 2+ self.pos.z
+    # print self.pos
+    #print hpr
+    #print self.vel
+
+  def update(self, timer):
+    #animation
+    self.delta += timer
+
+    if self.delta > Flame.animspeed:
+      self.delta = 0
+      self.obj.hide()
+      self.curspr += 1
+      if self.curspr > len(self.anim)-1:
+        self.curspr = 0
+    self.obj = self.anim[self.curspr]
+    self.obj.show()
+
+    self.pos.x = self.vel.x * timer + self.pos.x
+    self.pos.z = self.vel.y * timer + self.pos.z
+
+    self.obj.setPos(self.pos.x, self.pos.y, self.pos.z)
+    self.obj.setHpr(self.hpr)
 
 
 class Grenade(Item):

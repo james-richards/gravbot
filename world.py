@@ -26,7 +26,12 @@ class World():
     
     self.currentChunk = 0
 
-    # upper and lower rails
+  # add something to a chunk  
+  def addEntity(self, entity, chunk=None):
+    if chunk == None:
+      chunk = self.currentChunk
+    self.chunks[chunk].addEntity(entity)
+
 
   def update(self, timer):
     self.player.update(timer)
@@ -85,13 +90,15 @@ class Chunk():
       res = self.player.bb.contains(ebb)
       if res != 0:
         print res
+	print "ebb " + str(ebb)
         # get angle between player and object
 	et = entity.obj.getPos()
 	e = Point2(et.x, et.z)
 	p = self.player.location
-
 	self.player.velocity += p - e
 
+  def addEntity(self, entity):
+    self.entities.append(entity)
 
 class Rail(Entity):
   def __init__(self, app, posX, top=1):
