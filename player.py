@@ -7,7 +7,7 @@ from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode
 
 class Player(Entity):
 
-    walkspeed = 5 
+    walkspeed = 50
     damping = 0.9
     topspeed = 15
 
@@ -30,15 +30,15 @@ class Player(Entity):
         self.velocity = Vec3(0)
 	self.pt = 0.0
 
-
-	self.bounds.append(BoundingBox())
-
-	self.shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+	self.shape = BulletBoxShape(Vec3(1.0, 1.0, 1.0))
 	self.bnode = BulletRigidBodyNode('Box')
 	self.bnode.setMass(1.0)
 	self.bnode.setAngularVelocity(Vec3(0))
+	self.bnode.setAngularFactor(Vec3(0))
 	self.bnode.addShape(self.shape)
-	 
+	self.bnode.setLinearDamping(0.95)
+	self.bnode.setLinearSleepThreshold(0)
+
 	app.bw.attachRigidBody(self.bnode)
 
 	self.node = app.render.attachNewNode(self.bnode)
@@ -72,19 +72,15 @@ class Player(Entity):
         self.velocity = self.bnode.getLinearVelocity()
 
         if (self.leftMove):
-            self.velocity.x = self.velocity.x - self.walkspeed
+          self.bnode.applyCentralForce(Vec3(-Player.walkspeed,0,0))
         if (self.rightMove):
-            self.velocity.x = self.velocity.x + self.walkspeed 
+          self.bnode.applyCentralForce(Vec3(Player.walkspeed,0,0))
         
-        if (self.velocity.x < 0.1 and self.velocity.x > -0.1):
-	   self.velocity.x = 0.0
-
         if (self.velocity.x < -self.topspeed):
 	   self.velocity.x = -self.topspeed
         if (self.velocity.x > self.topspeed):
 	   self.velocity.x = self.topspeed
 
-        self.velocity *= 0.95
 	mouse = self.app.mousePos
         # player position in screen space (-1 to 1)
         pos2d = Point3()
@@ -113,27 +109,16 @@ class Player(Entity):
 	armAngle = atan2(self.gunVector.y, self.gunVector.x)
 	self.arm.setHpr(self.armNode, 0, 0, -1 * degrees(armAngle))
 
-	self.bnode.setAngularVelocity(Vec3(0))
-	self.bnode.setLinearVelocity(self.velocity)
-
-
-
     def moveLeft(self, switch):
         self.leftMove = switch 
+        #self.bnode.applyCentralForce(Vec3(-500,0,0))
 
     def moveRight(self, switch):
-        self.rightMove = switch
+        self.rightMove = switch 
+        #self.bnode.applyCentralForce(Vec3(500,0,0))
 
     def jump(self):
-        self.velocity.y += 5
-	if self.velocity.y > self.topspeed:
-	  self.velocity.y = self.topspeed
-	if self.velocity.y < -self.topspeed:
-	  self.velocity.y = -self.topspeed
+        self.bnode.applyCentralForce(Vec3(0,0,500))
 
     def crouch(self):
-        self.velocity.y -= 5
-	if self.velocity.y > self.topspeed:
-	  self.velocity.y = self.topspeed
-	if self.velocity.y < -self.topspeed:
-	  self.velocity.y = -self.topspeed
+        self.bnode.applyCentralForce(Vec3(0,0,-500))

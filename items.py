@@ -1,7 +1,8 @@
 from math import degrees, sin, cos
-from panda3d.core import Point2, BoundingSphere
+from panda3d.core import Point2, BoundingSphere, Vec3, Point3
 from entity import Entity
-
+from panda3d.bullet import BulletBoxShape,BulletRigidBodyNode
+from inspect import getmembers
 
 class Item(object):
   def __init__(self, app, player, charges = 1):
@@ -37,7 +38,8 @@ class Blowtorch(Item):
 
   def activate(self):
     #add a flame projectile
-    self.app.world.addEntity(Flame(self.app, self.obj.getPos(self.app.render), self.obj.getHpr()))
+    print self.player.node.getPos()
+    self.app.world.addEntity(Flame(self.app, self.player.obj.getPos(self.app.render), self.obj.getHpr()))
     return True
 
   def update(self, timer):
@@ -52,6 +54,20 @@ class Flame(Entity):
   def __init__(self, app, pos, hpr):
     super(Flame, self).__init__()
 
+    self.shape = BulletBoxShape(Vec3(1,1,1))
+    self.bnode = BulletRigidBodyNode()
+    self.bnode.setMass(1.0)
+    self.bnode.addShape(self.shape)
+
+    self.np = app.render.attachNewNode(self.bnode)
+
+    trans = self.bnode.get_transform()
+    trans.setPos(pos)
+    trans.setHpr(hpr)
+    self.bnode.set_transform(trans)
+    app.bw.attachRigidBody(self.bnode)
+
+    self.app = app
     self.anim = list()
     self.anim.append(app.loadObject("flame1", depth=Flame.depth))
     self.anim.append(app.loadObject("flame2", depth=Flame.depth))
@@ -59,11 +75,12 @@ class Flame(Entity):
 
     for a in self.anim:
       a.hide()
+      a.reparentTo(self.np)
 
-    self.app = app
     self.curspr = 0
     self.obj = self.anim[self.curspr]
     self.obj.show() 
+    self.livetime = 0
     self.delta = 0
 
     self.pos = pos
@@ -73,21 +90,14 @@ class Flame(Entity):
     self.vel.x = cos(app.world.player.angle)*Flame.speed
     self.vel.y = sin(app.world.player.angle)*Flame.speed
 
-    self.vel.x += app.world.player.velocity.x
-    
-    #self.pos.x += 4  
-    #self.pos.z += 2
     self.pos.x = self.vel.x / Flame.speed * 2+ self.pos.x
-    self.pos.z = self.vel.y / Flame.speed * 2+ self.pos.z
+    self.pos.z += self.vel.y / Flame.speed * 2+ self.pos.z
 
-    self.bounds.append(BoundingSphere(self.pos, 0.5))
-    # print self.pos
-    #print hpr
-    #print self.vel
 
   def update(self, timer):
     #animation
     self.delta += timer
+    self.livetime += timer
 
     if self.delta > Flame.animspeed:
       self.delta = 0
@@ -103,9 +113,6 @@ class Flame(Entity):
 
     self.obj.setPos(self.pos.x, self.pos.y, self.pos.z)
     self.obj.setHpr(self.hpr)
-
-    s = self.obj.getBounds()
-    self.bounds[0] = BoundingSphere(s.getCenter(), s.getRadius())
 
 
 class Grenade(Item):

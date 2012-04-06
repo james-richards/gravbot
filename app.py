@@ -78,12 +78,13 @@ class App(ShowBase):
     delta = task.time - self.prevTime
     self.prevTime = task.time
 
+    dt = globalClock.getDt()
+    self.bw.doPhysics(dt)
+
     if(base.mouseWatcherNode.hasMouse()):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
       self.mousePos.y = self.mouseWatcherNode.getMouseY()
     self.world.update(delta)  
-    dt = globalClock.getDt()
-    self.bw.doPhysics(dt)
 
     return Task.cont
 
