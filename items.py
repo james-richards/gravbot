@@ -1,5 +1,5 @@
 from math import degrees, sin, cos
-from panda3d.core import Point2
+from panda3d.core import Point2, BoundingSphere
 from entity import Entity
 
 
@@ -46,7 +46,7 @@ class Blowtorch(Item):
 # The thing that comes out the end
 class Flame(Entity):
   animspeed = 0.1 
-  depth = 50
+  depth = 55
   playerWidth = 3
   speed = 40
   def __init__(self, app, pos, hpr):
@@ -72,11 +72,15 @@ class Flame(Entity):
     self.vel = Point2()
     self.vel.x = cos(app.world.player.angle)*Flame.speed
     self.vel.y = sin(app.world.player.angle)*Flame.speed
+
+    self.vel += app.world.player.velocity
     
     #self.pos.x += 4  
     #self.pos.z += 2
     self.pos.x = self.vel.x / Flame.speed * 2+ self.pos.x
     self.pos.z = self.vel.y / Flame.speed * 2+ self.pos.z
+
+    self.bounds.append(BoundingSphere(self.pos, 0.5))
     # print self.pos
     #print hpr
     #print self.vel
@@ -99,6 +103,9 @@ class Flame(Entity):
 
     self.obj.setPos(self.pos.x, self.pos.y, self.pos.z)
     self.obj.setHpr(self.hpr)
+
+    s = self.obj.getBounds()
+    self.bounds[0] = BoundingSphere(s.getCenter(), s.getRadius())
 
 
 class Grenade(Item):

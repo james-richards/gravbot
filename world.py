@@ -3,9 +3,11 @@
 # simulate the current, previous and next chunks
 
 from entity import Entity
-from panda3d.core import Point2, Point3, BoundingBox
+from panda3d.core import Point2, Point3, BoundingBox, BoundingSphere
 from player import Player
 chunklength = 200
+
+
 
 class World():
   def __init__(self, app):
@@ -83,21 +85,16 @@ class Chunk():
     # maybe the enemies too
     # possibly projectiles.
 
+    i = 0
+    j = 0
+    for i in range(0, len(self.entities)-1):
+      for j in range(i+1, len(self.entities)-1):
+        entity1 = self.entities[i]
+        entity2 = self.entities[j]
+	entity1.collideWith(entity2)
+
     for entity in self.entities:
       entity.update(timer)
-      ebbt = entity.obj.getTightBounds()
-      ebb = BoundingBox(ebbt[0], ebbt[1])
-      res = self.player.bb.contains(ebb)
-      if res != 0:
-        print res
-	print "ebb    " + str(ebb)
-	print "player " + str(self.player.bb)
-        # get angle between player and object
-	et = entity.obj.getPos()
-	e = Point2(et.x, et.z)
-	p = self.player.location
-	self.player.velocity += p - e
-	self.player.location = self.player.prevloc
 
   def addEntity(self, entity):
     self.entities.append(entity)
@@ -116,6 +113,7 @@ class Wall(Entity):
     super(Wall, self).__init__()
     self.health = 100
     self.obj = app.loadObject("wall", depth=55, scaleX=1.0, scaleY=1.0, pos=pos)
+
 
   def update(self, timer):
     if self.health < 0:

@@ -16,7 +16,8 @@ class Player(Entity):
     def __init__(self, app):
 	super(Player, self).__init__()
 
-	self.obj = app.loadObject("player", scale = 4, depth = 55)
+	self.obj = app.loadObject("player")
+
         self.app = app
         self.health = 100
         self.inventory = dict()
@@ -26,6 +27,14 @@ class Player(Entity):
         self.location = Point2(-90,0)
         self.velocity = Point2(0,0)
 	self.pt = 0.0
+
+	self.bounds.append(BoundingBox())
+
+	self.node = app.render.attachNewNode("playerRoot")
+	self.node.setPos(self.obj.getPos())
+	self.obj.setPos(0,0,0)
+	self.obj.setScale(2)
+	self.obj.reparentTo(self.node)
 
     def initialise(self):
 	self.inventory["LightLaser"] = LightLaser(self.app, self)
@@ -94,19 +103,11 @@ class Player(Entity):
 	armAngle = atan2(self.gunVector.y, self.gunVector.x)
 	self.arm.setHpr(self.armNode, 0, 0, -1 * degrees(armAngle))
 
-	#Basic rail collision
-	#if (self.location.y > 4.6):
-	#  self.location.y = 4.6
-	#if (self.location.y < -5.0):
-	#  self.location.y = -5.0
-	#if (self.location.x < -99):
-	#  self.location.x = -99
-
-        self.obj.setPos(self.location.x, self.depth, self.location.y)
+        self.node.setPos(self.location.x, self.depth, self.location.y)
 
         bbmin = Point3(self.location.x - 1, self.depth - 1, self.location.y - 2)
 	bbmax = Point3(self.location.x + 1, self.depth + 1, self.location.y + 2)
-	self.bb = BoundingBox(bbmin, bbmax)
+	self.bounds[0] = BoundingBox(bbmin, bbmax)
 
     def moveLeft(self, switch):
         self.leftMove = switch 
