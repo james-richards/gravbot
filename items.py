@@ -73,7 +73,7 @@ class Flame(Entity):
     self.vel.x = cos(app.world.player.angle)*Flame.speed
     self.vel.y = sin(app.world.player.angle)*Flame.speed
 
-    self.vel += app.world.player.velocity
+    self.vel.x += app.world.player.velocity.x
     
     #self.pos.x += 4  
     #self.pos.z += 2

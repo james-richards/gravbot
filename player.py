@@ -1,7 +1,9 @@
 from entity import Entity
-from panda3d.core import Point2, Point3, NodePath, BoundingBox
+from panda3d.core import Point2, Point3, NodePath, BoundingBox, Vec3
 from items import Blowtorch, LightLaser, Grenade
 from math import atan2, degrees, sin, cos
+
+from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode
 
 class Player(Entity):
 
@@ -25,16 +27,27 @@ class Player(Entity):
         self.depth = self.obj.getPos().y
 
         self.location = Point2(-90,0)
-        self.velocity = Point2(0,0)
+        self.velocity = Vec3(0)
 	self.pt = 0.0
+
 
 	self.bounds.append(BoundingBox())
 
-	self.node = app.render.attachNewNode("playerRoot")
+	self.shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+	self.bnode = BulletRigidBodyNode('Box')
+	self.bnode.setMass(1.0)
+	self.bnode.setAngularVelocity(Vec3(0))
+	self.bnode.addShape(self.shape)
+	 
+	app.bw.attachRigidBody(self.bnode)
+
+	self.node = app.render.attachNewNode(self.bnode)
 	self.node.setPos(self.obj.getPos())
+
 	self.obj.setPos(0,0,0)
 	self.obj.setScale(2)
 	self.obj.reparentTo(self.node)
+        self.node.setPos(self.location.x, self.depth, self.location.y)
 
     def initialise(self):
 	self.inventory["LightLaser"] = LightLaser(self.app, self)
@@ -56,17 +69,13 @@ class Player(Entity):
         self.currentItem.activate()
 
     def update(self, timer):
-        self.prevloc = self.location
+        self.velocity = self.bnode.getLinearVelocity()
 
         if (self.leftMove):
             self.velocity.x = self.velocity.x - self.walkspeed
         if (self.rightMove):
             self.velocity.x = self.velocity.x + self.walkspeed 
         
-        self.location = Point2(self.location.x + timer*self.velocity.x, self.location.y+timer*self.velocity.y)
-
-	self.velocity = Point2(self.velocity.x*self.damping, self.velocity.y*self.damping)
-
         if (self.velocity.x < 0.1 and self.velocity.x > -0.1):
 	   self.velocity.x = 0.0
 
@@ -75,6 +84,7 @@ class Player(Entity):
         if (self.velocity.x > self.topspeed):
 	   self.velocity.x = self.topspeed
 
+        self.velocity *= 0.95
 	mouse = self.app.mousePos
         # player position in screen space (-1 to 1)
         pos2d = Point3()
@@ -93,7 +103,7 @@ class Player(Entity):
 
 	# move the camera so the player is centred horizontally,
 	# but keep the camera steady vertically
-	self.app.camera.setPos(self.location.x, 0, 0)
+	self.app.camera.setPos(self.node.getPos().x, 0, 0)
 
 	#move arm into correct position.
 
@@ -103,11 +113,10 @@ class Player(Entity):
 	armAngle = atan2(self.gunVector.y, self.gunVector.x)
 	self.arm.setHpr(self.armNode, 0, 0, -1 * degrees(armAngle))
 
-        self.node.setPos(self.location.x, self.depth, self.location.y)
+	self.bnode.setAngularVelocity(Vec3(0))
+	self.bnode.setLinearVelocity(self.velocity)
 
-        bbmin = Point3(self.location.x - 1, self.depth - 1, self.location.y - 2)
-	bbmax = Point3(self.location.x + 1, self.depth + 1, self.location.y + 2)
-	self.bounds[0] = BoundingBox(bbmin, bbmax)
+
 
     def moveLeft(self, switch):
         self.leftMove = switch 

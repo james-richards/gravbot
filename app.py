@@ -8,6 +8,8 @@ from panda3d.core import Point3, Point2, Texture, NodePath, CollisionRay, Vec3
 from panda3d.bullet import BulletWorld
 from panda3d.bullet import BulletPlaneShape
 from panda3d.bullet import BulletRigidBodyNode
+from panda3d.bullet import BulletDebugNode
+
 
 from entity import Entity
 from player import Player
@@ -20,6 +22,9 @@ SPRITE_POS = 20
 class App(ShowBase):
   def __init__(self):
     ShowBase.__init__(self)
+
+    self.bw = BulletWorld()
+    self.bw.setGravity(0,0,-9.8)
 
     self.world = World(self)
 
@@ -45,6 +50,28 @@ class App(ShowBase):
 
     self.rl = base.camLens.makeCopy()
 
+    # bullet testing
+
+    debugNode = BulletDebugNode('Debug')
+    debugNode.showWireframe(True)
+    debugNode.showConstraints(True)
+    debugNode.showBoundingBoxes(False)
+    debugNode.showNormals(False)
+    debugNP = render.attachNewNode(debugNode)
+    debugNP.show()
+
+    # the ground
+    shape = BulletPlaneShape(Vec3(0, 0, 1), 1)
+     
+    self.groundNode = BulletRigidBodyNode('Ground')
+    self.groundNode.addShape(shape)
+      
+    np = render.attachNewNode(self.groundNode)
+    np.setPos(0, 0, -6)
+       
+    self.bw.attachRigidBody(self.groundNode)
+    self.bw.setDebugNode(debugNP.node())
+
 
 
   def update(self, task):
@@ -55,6 +82,8 @@ class App(ShowBase):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
       self.mousePos.y = self.mouseWatcherNode.getMouseY()
     self.world.update(delta)  
+    dt = globalClock.getDt()
+    self.bw.doPhysics(dt)
 
     return Task.cont
 

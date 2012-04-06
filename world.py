@@ -84,15 +84,6 @@ class Chunk():
     # this has all the bits of wall
     # maybe the enemies too
     # possibly projectiles.
-
-    i = 0
-    j = 0
-    for i in range(0, len(self.entities)-1):
-      for j in range(i+1, len(self.entities)-1):
-        entity1 = self.entities[i]
-        entity2 = self.entities[j]
-	entity1.collideWith(entity2)
-
     for entity in self.entities:
       entity.update(timer)
 
