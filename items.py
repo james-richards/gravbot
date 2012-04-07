@@ -38,7 +38,6 @@ class Blowtorch(Item):
 
   def activate(self):
     #add a flame projectile
-    print self.player.node.getPos()
     self.app.world.addEntity(Flame(self.app, self.player.obj.getPos(self.app.render), self.obj.getHpr()))
     return True
 
@@ -48,30 +47,25 @@ class Blowtorch(Item):
 # The thing that comes out the end
 class Flame(Entity):
   animspeed = 0.1 
-  depth = 55
+  depth = 20 
   playerWidth = 3
   speed = 40
   def __init__(self, app, pos, hpr):
     super(Flame, self).__init__()
 
-    self.shape = BulletBoxShape(Vec3(1,1,1))
+    self.shape = BulletBoxShape(Vec3(1,1,0.5))
     self.bnode = BulletRigidBodyNode()
     self.bnode.setMass(1.0)
     self.bnode.addShape(self.shape)
 
     self.np = app.render.attachNewNode(self.bnode)
 
-    trans = self.bnode.get_transform()
-    trans.setPos(pos)
-    trans.setHpr(hpr)
-    self.bnode.set_transform(trans)
-    app.bw.attachRigidBody(self.bnode)
-
     self.app = app
     self.anim = list()
-    self.anim.append(app.loadObject("flame1", depth=Flame.depth))
-    self.anim.append(app.loadObject("flame2", depth=Flame.depth))
-    self.anim.append(app.loadObject("flame3", depth=Flame.depth))
+    self.anim.append(app.loadObject("flame1", depth=0))
+    self.anim.append(app.loadObject("flame2", depth=0))
+    self.anim.append(app.loadObject("flame3", depth=0))
+    self.app.bw.attachRigidBody(self.bnode)
 
     for a in self.anim:
       a.hide()
@@ -90,9 +84,13 @@ class Flame(Entity):
     self.vel.x = cos(app.world.player.angle)*Flame.speed
     self.vel.y = sin(app.world.player.angle)*Flame.speed
 
-    self.pos.x = self.vel.x / Flame.speed * 2+ self.pos.x
-    self.pos.z += self.vel.y / Flame.speed * 2+ self.pos.z
+    self.bnode.setLinearVelocity(Vec3(self.vel.x, 0, self.vel.y))
 
+    self.np.setHpr(hpr)
+    self.np.setPos(pos)
+    print self.np.getPos(self.app.render)
+    print "flame " + str(pos)
+    print "flame " + str(hpr)
 
   def update(self, timer):
     #animation

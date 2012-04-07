@@ -18,7 +18,7 @@ class Player(Entity):
     def __init__(self, app):
 	super(Player, self).__init__()
 
-	self.obj = app.loadObject("player")
+	self.obj = app.loadObject("player", depth=20)
 
         self.app = app
         self.health = 100
@@ -30,7 +30,7 @@ class Player(Entity):
         self.velocity = Vec3(0)
 	self.pt = 0.0
 
-	self.shape = BulletBoxShape(Vec3(1.0, 1.0, 1.0))
+	self.shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
 	self.bnode = BulletRigidBodyNode('Box')
 	self.bnode.setMass(1.0)
 	self.bnode.setAngularVelocity(Vec3(0))
@@ -45,7 +45,7 @@ class Player(Entity):
 	self.node.setPos(self.obj.getPos())
 
 	self.obj.setPos(0,0,0)
-	self.obj.setScale(2)
+	self.obj.setScale(1)
 	self.obj.reparentTo(self.node)
         self.node.setPos(self.location.x, self.depth, self.location.y)
 
