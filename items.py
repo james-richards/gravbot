@@ -49,11 +49,11 @@ class Flame(Entity):
   animspeed = 0.1 
   depth = 20 
   playerWidth = 3
-  speed = 40
+  speed = 30 
   def __init__(self, app, pos, hpr):
     super(Flame, self).__init__()
 
-    self.shape = BulletBoxShape(Vec3(1,1,0.5))
+    self.shape = BulletBoxShape(Vec3(0.5,0.1,0.25))
     self.bnode = BulletRigidBodyNode()
     self.bnode.setMass(1.0)
     self.bnode.addShape(self.shape)
@@ -66,10 +66,6 @@ class Flame(Entity):
     self.anim.append(app.loadObject("flame2", depth=0))
     self.anim.append(app.loadObject("flame3", depth=0))
     self.app.bw.attachRigidBody(self.bnode)
-
-    for a in self.anim:
-      a.hide()
-      a.reparentTo(self.np)
 
     self.curspr = 0
     self.obj = self.anim[self.curspr]
@@ -84,13 +80,22 @@ class Flame(Entity):
     self.vel.x = cos(app.world.player.angle)*Flame.speed
     self.vel.y = sin(app.world.player.angle)*Flame.speed
 
-    self.bnode.setLinearVelocity(Vec3(self.vel.x, 0, self.vel.y))
+    tv = Vec3(self.vel.x, 0, self.vel.y)
+    tv += app.world.player.bnode.getLinearVelocity()
+
+    self.bnode.setLinearVelocity(tv)
+    self.bnode.setGravity(Vec3(0,0,0))
 
     self.np.setHpr(hpr)
     self.np.setPos(pos)
-    print self.np.getPos(self.app.render)
-    print "flame " + str(pos)
-    print "flame " + str(hpr)
+
+    self.bnode.setAngularFactor(Vec3(0,0,0))
+    self.bnode.setLinearFactor(Vec3(1,0,1))
+
+    for a in self.anim:
+      a.hide()
+      a.reparentTo(self.np)
+      a.setPos(0, -0.1,-0.3)
 
   def update(self, timer):
     #animation

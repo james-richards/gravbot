@@ -3,8 +3,10 @@
 # simulate the current, previous and next chunks
 
 from entity import Entity
-from panda3d.core import Point2, Point3, BoundingBox, BoundingSphere
+from panda3d.core import Point2, Point3, BoundingBox, BoundingSphere, Vec3
 from player import Player
+from panda3d.bullet import BulletPlaneShape
+from panda3d.bullet import BulletRigidBodyNode
 chunklength = 200
 
 
@@ -27,6 +29,21 @@ class World():
     self.chunks.append(Chunk(app, self.worldSize-1, self.player,end = True))
     
     self.currentChunk = 0
+
+    # the lower rail
+    shape = BulletPlaneShape(Vec3(0, 0, 1), 1)
+    self.groundNode = BulletRigidBodyNode('Ground')
+    self.groundNode.addShape(shape)
+    self.groundnp = render.attachNewNode(self.groundNode)
+    self.groundnp.setPos(0, 0, -6)
+    app.bw.attachRigidBody(self.groundNode)
+
+    shape2 = BulletPlaneShape(Vec3(0, 0, -1), 1)
+    self.skyNode = BulletRigidBodyNode('Sky')
+    self.skyNode.addShape(shape2)
+    self.skynp = render.attachNewNode(self.skyNode)
+    self.skynp.setPos(0, 0, 6)
+    app.bw.attachRigidBody(self.skyNode)
 
   # add something to a chunk  
   def addEntity(self, entity, chunk=None):
@@ -72,6 +89,13 @@ class Chunk():
       startrail3 = Rail(app, -100, top=-0.6)
       startrail3.obj.setHpr(Point3(0,0,90))
       self.entities.append(startrail3)
+
+      shape = BulletPlaneShape(Vec3(1, 0, 0), 1)
+      self.startRailNode = BulletRigidBodyNode('startRail')
+      self.startRailNode.addShape(shape)
+      self.startrailnp = render.attachNewNode(self.startRailNode)
+      self.startrailnp.setPos(-90, 0, 0)
+      app.bw.attachRigidBody(self.startRailNode)
 
       # load a background for unplayable area
       prebg = self.app.loadObject("stars", depth=100, scaleX=200, scaleY=200.0, pos=Point2(-200,0))

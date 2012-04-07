@@ -11,9 +11,10 @@ class Player(Entity):
     damping = 0.9
     topspeed = 15
 
-    leftMove = False;
-    rightMove = False;
-
+    leftMove = False
+    rightMove = False
+    jumpToggle = False
+    crouchToggle = False
 
     def __init__(self, app):
 	super(Player, self).__init__()
@@ -30,7 +31,7 @@ class Player(Entity):
         self.velocity = Vec3(0)
 	self.pt = 0.0
 
-	self.shape = BulletBoxShape(Vec3(0.5, 0.5, 0.5))
+	self.shape = BulletBoxShape(Vec3(0.5, 1.0, 0.5))
 	self.bnode = BulletRigidBodyNode('Box')
 	self.bnode.setMass(1.0)
 	self.bnode.setAngularVelocity(Vec3(0))
@@ -75,6 +76,10 @@ class Player(Entity):
           self.bnode.applyCentralForce(Vec3(-Player.walkspeed,0,0))
         if (self.rightMove):
           self.bnode.applyCentralForce(Vec3(Player.walkspeed,0,0))
+        if (self.jumpToggle):
+          self.bnode.applyCentralForce(Vec3(0,0,Player.walkspeed))
+        if (self.crouchToggle):
+          self.bnode.applyCentralForce(Vec3(0,0,Player.walkspeed))
         
         if (self.velocity.x < -self.topspeed):
 	   self.velocity.x = -self.topspeed
@@ -117,8 +122,8 @@ class Player(Entity):
         self.rightMove = switch 
         #self.bnode.applyCentralForce(Vec3(500,0,0))
 
-    def jump(self):
-        self.bnode.applyCentralForce(Vec3(0,0,500))
+    def jump(self, switch):
+        self.jumpToggle = switch
 
-    def crouch(self):
-        self.bnode.applyCentralForce(Vec3(0,0,-500))
+    def crouch(self, switch):
+        self.crouchToggle = switch

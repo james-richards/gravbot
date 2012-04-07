@@ -36,8 +36,11 @@ class App(ShowBase):
     self.accept("d", self.world.player.moveRight, [True])
     self.accept("d-up", self.world.player.moveRight, [False])
 
-    self.accept("space", self.world.player.jump, [])
-    self.accept("c", self.world.player.crouch, [])
+    self.accept("space", self.world.player.jump, [True])
+    self.accept("space-up", self.world.player.jump, [False])
+
+    self.accept("c", self.world.player.crouch, [True])
+    self.accept("c-up", self.world.player.crouch, [False])
 
     self.accept("mouse1", self.world.player.activate, [])
 
@@ -60,16 +63,6 @@ class App(ShowBase):
     debugNP = render.attachNewNode(debugNode)
     debugNP.show()
 
-    # the ground
-    shape = BulletPlaneShape(Vec3(0, 0, 1), 1)
-     
-    self.groundNode = BulletRigidBodyNode('Ground')
-    self.groundNode.addShape(shape)
-      
-    np = render.attachNewNode(self.groundNode)
-    np.setPos(0, 0, -6)
-       
-    self.bw.attachRigidBody(self.groundNode)
     self.bw.setDebugNode(debugNP.node())
 
 
