@@ -6,6 +6,7 @@ from entity import Entity
 from panda3d.core import Point2, Point3, BoundingBox, BoundingSphere, Vec3
 from player import Player
 from panda3d.bullet import BulletPlaneShape
+from panda3d.bullet import BulletBoxShape
 from panda3d.bullet import BulletRigidBodyNode
 chunklength = 200
 
@@ -117,6 +118,7 @@ class Chunk():
 class Rail(Entity):
   def __init__(self, app, posX, top=1):
     super(Rail, self).__init__()
+
     self.obj = app.loadObject("rail", depth=55, scaleX=10.0, scaleY=1.0, pos=Point2(0+posX,top*14.5))
 
   # Rails don't do much 
@@ -127,8 +129,17 @@ class Wall(Entity):
   def __init__(self, app, pos):
     super(Wall, self).__init__()
     self.health = 100
-    self.obj = app.loadObject("wall", depth=55, scaleX=1.0, scaleY=1.0, pos=pos)
 
+    shape = BulletBoxShape(Vec3(0.25,1.0,0.25))
+    self.bnode = BulletRigidBodyNode()
+    self.bnode.addShape(shape)
+    self.np = app.render.attachNewNode(self.bnode)
+    self.np.setPos(-80,20,0)
+    app.bw.attachRigidBody(self.bnode)
+
+    self.obj = app.loadObject("wall", depth = -1)
+    self.obj.reparentTo(self.np)
+    self.obj.setScale(0.5)
 
   def update(self, timer):
     if self.health < 0:

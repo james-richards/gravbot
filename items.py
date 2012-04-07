@@ -49,11 +49,11 @@ class Flame(Entity):
   animspeed = 0.1 
   depth = 20 
   playerWidth = 3
-  speed = 30 
+  speed = 20 
   def __init__(self, app, pos, hpr):
     super(Flame, self).__init__()
 
-    self.shape = BulletBoxShape(Vec3(0.5,0.1,0.25))
+    self.shape = BulletBoxShape(Vec3(0.1,0.1,0.05))
     self.bnode = BulletRigidBodyNode()
     self.bnode.setMass(1.0)
     self.bnode.addShape(self.shape)
@@ -75,6 +75,7 @@ class Flame(Entity):
 
     self.pos = pos
     self.pos.y = Flame.depth
+#    self.pos.z -= 0.2 
     self.hpr = hpr
     self.vel = Point2()
     self.vel.x = cos(app.world.player.angle)*Flame.speed
@@ -86,8 +87,10 @@ class Flame(Entity):
     self.bnode.setLinearVelocity(tv)
     self.bnode.setGravity(Vec3(0,0,0))
 
+    tv.normalize()
+
     self.np.setHpr(hpr)
-    self.np.setPos(pos)
+    self.np.setPos(pos+tv/2)
 
     self.bnode.setAngularFactor(Vec3(0,0,0))
     self.bnode.setLinearFactor(Vec3(1,0,1))
@@ -95,7 +98,8 @@ class Flame(Entity):
     for a in self.anim:
       a.hide()
       a.reparentTo(self.np)
-      a.setPos(0, -0.1,-0.3)
+      a.setScale(0.5)
+      a.setPos(0, -0.1,-0.15)
 
   def update(self, timer):
     #animation

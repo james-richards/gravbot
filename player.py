@@ -45,7 +45,7 @@ class Player(Entity):
 	self.node = app.render.attachNewNode(self.bnode)
 	self.node.setPos(self.obj.getPos())
 
-	self.obj.setPos(0,0,0)
+	self.obj.setPos(0,-1,0)
 	self.obj.setScale(1)
 	self.obj.reparentTo(self.node)
         self.node.setPos(self.location.x, self.depth, self.location.y)
@@ -87,18 +87,17 @@ class Player(Entity):
 	   self.velocity.x = self.topspeed
 
 	mouse = self.app.mousePos
-        # player position in screen space (-1 to 1)
-        pos2d = Point3()
-        base.rl.project(self.obj.getPos(base.camera), pos2d)
+	# extrude test
+	near = Point3()
+	far = Point3()
+	self.app.rl.extrude(mouse, near, far)
+	near *= 20 # player depth
 
-        #print pos2d
-
-
-        if(mouse.x - pos2d.x != 0):
-	  angle = atan2((mouse.y - pos2d.y) , (mouse.x)) 
-	else: angle = 90.0  
-
+	if near.x != 0:
+	  angle = atan2(near.z - self.node.getPos().z, near.x)
+	else : angle = 90  
 	self.angle = angle
+
 	# set current item to point at cursor   
 	self.currentItem.update(timer)
 
