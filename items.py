@@ -106,13 +106,6 @@ class Flame(Entity):
     self.obj = self.anim[self.curspr]
     self.obj.show()
 
-    self.pos.x = self.vel.x * timer + self.pos.x
-    self.pos.z = self.vel.y * timer + self.pos.z
-
-    self.obj.setPos(self.pos.x, self.pos.y, self.pos.z)
-    self.obj.setHpr(self.hpr)
-
-
 class Grenade(Item):
   def __init__(self, app, player):
     super(Grenade, self).__init__(app, player)
