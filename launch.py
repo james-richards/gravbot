@@ -3,10 +3,15 @@ run the game, optionally with profiling ...
 """
 
 def _run_app():
-    from gravbot.mc import App
+    from gravbot.app import App
     app = App()
     app.run()
 
+
+def _run__test_app():
+    from gravbot.mc import App
+    app = App()
+    app.run()
 
 def _complain_about_usage_and_die():
     sys.stderr.write('usage: [--profile]')
@@ -16,6 +21,7 @@ def main():
     import sys
     options = {
         '--profile': False,
+	'--test':False,
     }
 
 
@@ -37,6 +43,8 @@ def main():
         p.runcall(_wrapper)
         s = pstats.Stats(p)
         s.sort_stats('cumulative').print_stats(25)
+    if options['--test']:
+        _run_test_app()
     else:
         _run_app()
 
