@@ -1,0 +1,22 @@
+<rml>
+	<head>
+		<title>Main Menu</title>
+		<link type="text/rcss" href="gravbot.rcss" />
+		<style>
+			body
+			{
+				text-align: center;
+				top: 30%;
+
+				margin: auto;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<button onclick="document.hook.startExplore()">Start Explore-Mode</button><br />
+		<button>Start Meta-Mode</button><br />
+		<button onclick="document.hook.loadMenu('options')">Options</button><br />
+		<button onclick="exit()">Exit</button>
+	</body>
+</rml>
