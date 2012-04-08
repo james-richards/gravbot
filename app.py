@@ -14,19 +14,23 @@ from panda3d.bullet import BulletDebugNode
 from entity import Entity
 from player import Player
 from world import World
+import utilities 
 
 import sys
+
+from pandac.PandaModules import loadPrcFileData 
+
 
 SPRITE_POS = 20 
 
 class App(ShowBase):
   def __init__(self):
     ShowBase.__init__(self)
+    utilities.setApp(self)
 
-    self.bw = BulletWorld()
-    self.bw.setGravity(0,0,-9.8)
+    loadPrcFileData('', 'bullet-enable-contact-events true')
 
-    self.world = World(self)
+    self.world = World()
 
     self.taskMgr.add(self.update, "update")
 
@@ -46,6 +50,12 @@ class App(ShowBase):
 
     self.accept("escape", sys.exit, [])
 
+    self.accept('bullet-contact-added', self.onContactAdded) 
+    self.accept('bullet-contact-destroyed', self.onContactDestroyed) 
+
+    self.accept("h", self.showDBG, [True])
+    self.accept("h-up", self.showDBG, [False])
+
     self.prevTime = 0
 
     self.mousePos = Point2()
@@ -54,25 +64,21 @@ class App(ShowBase):
     self.rl = base.camLens.makeCopy()
 
     # bullet testing
-
     debugNode = BulletDebugNode('Debug')
     debugNode.showWireframe(True)
     debugNode.showConstraints(True)
     debugNode.showBoundingBoxes(False)
     debugNode.showNormals(False)
-    debugNP = render.attachNewNode(debugNode)
-    debugNP.show()
+    self.debugNP = render.attachNewNode(debugNode)
+    self.debugNP.show()
 
-    self.bw.setDebugNode(debugNP.node())
+    self.world.bw.setDebugNode(self.debugNP.node())
 
 
 
   def update(self, task):
     delta = task.time - self.prevTime
     self.prevTime = task.time
-
-    dt = globalClock.getDt()
-    self.bw.doPhysics(dt)
 
     if(base.mouseWatcherNode.hasMouse()):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
@@ -81,11 +87,23 @@ class App(ShowBase):
 
     return Task.cont
 
+  def onContactAdded(self, node1, node2):
+    return
+    
+  def onContactDestroyed(self, node1, node2):
+    return
+
   def mouseCap(self, task):
     if(base.mouseWatcherNode.hasMouse()):
       self.mousePos.x = self.mouseWatcherNode.getMouseX()
       self.mousePos.y = self.mouseWatcherNode.getMouseY()
     return Task.cont  
+
+  def showDBG(self, b):
+    if b:
+      self.debugNP.show()
+    else:  
+      self.debugNP.hide()
 
   def loadObject(self, tex = None, pos = Point2(0,0), depth = SPRITE_POS, transparency = True, scaleX = 1, scaleY = 1, scale = None):
     obj = self.loader.loadModel("models/plane") 

@@ -1,7 +1,8 @@
 from entity import Entity
-from panda3d.core import Point2, Point3, NodePath, BoundingBox, Vec3
+from panda3d.core import Point2, Point3, NodePath, BoundingBox, Vec3, BitMask32
 from items import Blowtorch, LightLaser, Grenade
 from math import atan2, degrees, sin, cos
+import utilities
 
 from panda3d.bullet import BulletBoxShape, BulletRigidBodyNode
 
@@ -16,12 +17,12 @@ class Player(Entity):
     jumpToggle = False
     crouchToggle = False
 
-    def __init__(self, app):
+    def __init__(self, world):
 	super(Player, self).__init__()
 
-	self.obj = app.loadObject("player", depth=20)
+	self.obj = utilities.loadObject("player", depth=20)
 
-        self.app = app
+        self.world = world 
         self.health = 100
         self.inventory = dict()
 
@@ -40,20 +41,22 @@ class Player(Entity):
 	self.bnode.setLinearDamping(0.95)
 	self.bnode.setLinearSleepThreshold(0)
 
-	app.bw.attachRigidBody(self.bnode)
+	world.bw.attachRigidBody(self.bnode)
+	self.bnode.setPythonTag("Entity", self)
+	self.bnode.setIntoCollideMask(BitMask32.bit(0))
 
-	self.node = app.render.attachNewNode(self.bnode)
+	self.node = utilities.app.render.attachNewNode(self.bnode)
 	self.node.setPos(self.obj.getPos())
 
-	self.obj.setPos(0,-1,0)
+	self.obj.setPos(0,0,0)
 	self.obj.setScale(1)
 	self.obj.reparentTo(self.node)
         self.node.setPos(self.location.x, self.depth, self.location.y)
 
     def initialise(self):
-	self.inventory["LightLaser"] = LightLaser(self.app, self)
-        self.inventory["Blowtorch"] = Blowtorch(self.app, self)
-        self.inventory["Grenade"] = Grenade(self.app, self)
+	self.inventory["LightLaser"] = LightLaser(self.world, self)
+        self.inventory["Blowtorch"] = Blowtorch(self.world, self)
+        self.inventory["Grenade"] = Grenade(self.world, self)
 
         for i in self.inventory:
 	  self.inventory[i].initialise()
@@ -63,7 +66,7 @@ class Player(Entity):
 
         self.armNode = self.obj.attachNewNode("arm")
 	self.armNode.setPos(0.20,0,0.08)
-        self.arm = self.app.loadObject("arm", scaleX = 0.5,scaleY = 0.5, depth = -0.2)
+        self.arm = utilities.loadObject("arm", scaleX = 0.5,scaleY = 0.5, depth = -0.2)
 	self.arm.reparentTo(self.armNode)
 
     def activate(self):
@@ -86,11 +89,11 @@ class Player(Entity):
         if (self.velocity.x > self.topspeed):
 	   self.velocity.x = self.topspeed
 
-	mouse = self.app.mousePos
+	mouse = utilities.app.mousePos
 	# extrude test
 	near = Point3()
 	far = Point3()
-	self.app.rl.extrude(mouse, near, far)
+	utilities.app.camLens.extrude(mouse, near, far)
 	near *= 20 # player depth
 
 	if near.x != 0:
@@ -103,7 +106,7 @@ class Player(Entity):
 
 	# move the camera so the player is centred horizontally,
 	# but keep the camera steady vertically
-	self.app.camera.setPos(self.node.getPos().x, 0, 0)
+	utilities.app.camera.setPos(self.node.getPos().x, 0, 0)
 
 	#move arm into correct position.
 
