@@ -31,7 +31,7 @@ class ExploreScreen(GameScreen):
 
 		utilities.setApp(self.app)
 
-		self.world = World()
+		self.world = World(10)
 
 		self.app.taskMgr.add(self.update, "update")
 

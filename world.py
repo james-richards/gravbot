@@ -113,7 +113,7 @@ class Wall(Entity):
     return
 
 
-  def expandNode(pt)
+  def expandNode(pt):
     for i in range(1, int(worldsize.x)-1):
       for j in range(1, int(worldsize.y)-1):
        if pt[i][j] == 1:
@@ -133,4 +133,3 @@ class Wall(Entity):
          if pt[i][j+1] == 1 : 
 	   self.entities[-1].addToNode(Point2(i,j))
 	   pt[i][j] = -1
-         if pt[i+1][j-1] == 1 : 
