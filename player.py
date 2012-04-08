@@ -28,11 +28,11 @@ class Player(Entity):
 
         self.depth = self.obj.getPos().y
 
-        self.location = Point2(-90,0)
+        self.location = Point2(0.5,0.5)
         self.velocity = Vec3(0)
 	self.pt = 0.0
 
-	self.shape = BulletBoxShape(Vec3(0.5, 1.0, 0.5))
+	self.shape = BulletBoxShape(Vec3(0.3, 1.0, 0.49))
 	self.bnode = BulletRigidBodyNode('Box')
 	self.bnode.setMass(1.0)
 	self.bnode.setAngularVelocity(Vec3(0))
@@ -82,7 +82,7 @@ class Player(Entity):
         if (self.jumpToggle):
           self.bnode.applyCentralForce(Vec3(0,0,Player.walkspeed))
         if (self.crouchToggle):
-          self.bnode.applyCentralForce(Vec3(0,0,Player.walkspeed))
+          self.bnode.applyCentralForce(Vec3(0,0,-Player.walkspeed))
         
         if (self.velocity.x < -self.topspeed):
 	   self.velocity.x = -self.topspeed
@@ -94,11 +94,14 @@ class Player(Entity):
 	near = Point3()
 	far = Point3()
 	utilities.app.camLens.extrude(mouse, near, far)
+	camp = utilities.app.camera.getPos()
 	near *= 20 # player depth
 
 	if near.x != 0:
-	  angle = atan2(near.z - self.node.getPos().z, near.x)
+	  angle = atan2(near.z + camp.z - self.node.getPos().z, near.x + camp.x - self.node.getPos().x)
+	  #angle = atan2(near.z, near.x)
 	else : angle = 90  
+
 	self.angle = angle
 
 	# set current item to point at cursor   
@@ -106,7 +109,7 @@ class Player(Entity):
 
 	# move the camera so the player is centred horizontally,
 	# but keep the camera steady vertically
-	utilities.app.camera.setPos(self.node.getPos().x, 0, 0)
+	utilities.app.camera.setPos(self.node.getPos().x, 0, self.node.getPos().z)
 
 	#move arm into correct position.
 

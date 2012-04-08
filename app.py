@@ -30,7 +30,7 @@ class App(ShowBase):
 
     loadPrcFileData('', 'bullet-enable-contact-events true')
 
-    self.world = World()
+    self.world = World(10)
 
     self.taskMgr.add(self.update, "update")
 
