@@ -1,0 +1,27 @@
+body
+{
+	font-family: Delicious;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 16;
+}
+
+button
+{
+	width: 160px;
+
+	font-size: 18;
+	text-align: center;
+	
+	background-color: red;
+}
+
+button:hover
+{
+	background-color: blue;
+}
+
+button:active
+{
+	background-color: black;
+}
