@@ -63,15 +63,15 @@ class ExploreScreen(GameScreen):
 		self.app.rl = base.camLens.makeCopy()
 
 		#bullet testing
-		debugNode = BulletDebugNode('Debug')
-		debugNode.showWireframe(True)
-		debugNode.showConstraints(True)
-		debugNode.showBoundingBoxes(False)
-		debugNode.showNormals(False)
-		self.debugNP = render.attachNewNode(debugNode)
-		self.debugNP.show()
+		#debugNode = BulletDebugNode('Debug')
+		#debugNode.showWireframe(True)
+		#debugNode.showConstraints(True)
+		#debugNode.showBoundingBoxes(False)
+		#debugNode.showNormals(False)
+		#self.debugNP = render.attachNewNode(debugNode)
+		#self.debugNP.show()
 
-		self.world.bw.setDebugNode(self.debugNP.node())
+		#self.world.bw.setDebugNode(self.debugNP.node())
 
 	def update(self, task):
 		delta = task.time - self.prevTime

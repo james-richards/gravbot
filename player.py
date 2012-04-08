@@ -28,7 +28,7 @@ class Player(Entity):
 
         self.depth = self.obj.getPos().y
 
-        self.location = Point2(0.5,0.5)
+        self.location = Point2(0,0)
         self.velocity = Vec3(0)
 	self.pt = 0.0
 

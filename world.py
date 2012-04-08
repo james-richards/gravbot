@@ -13,7 +13,7 @@ from panda3d.bullet import BulletRigidBodyNode
 
 import utilities
 
-worldsize = Point2(30,30)
+worldsize = Point2(20,20)
 
 class World():
   def __init__(self, size):
@@ -71,11 +71,15 @@ class World():
     pt[1][0] = 0	
     pt[0][1] = 0	
     pt[1][1] = 0	
-    pt[2][2] = 1
-    pt[2][1] = 1	
-    pt[1][2] = 1	
-    pt[2][2] = 1
+    pt[2][2] = 0
+    pt[2][1] = 0
+    pt[1][2] = 0
+    pt[2][2] = 0 
 
+    for i in range(2, int(worldsize.x)):
+      for j in range(2, int(worldsize.y)):
+        if pt[i][j] == 1:
+	  self.entities.append(Wall(self, Point2(i,j)))
     
   def addEntity(self, entity):
     self.entities.append(entity)
@@ -83,7 +87,7 @@ class World():
 class Rail(Entity):
   def __init__(self, world, posX, posY):
     super(Rail, self).__init__()
-    self.obj = utilities.loadObject("rail", depth=55, scaleX=10.0, scaleY=1.0, pos=Point2(posX,posY))
+    self.obj = utilities.loadObject("rail", depth=20, scaleX=10.0, scaleY=1.0, pos=Point2(posX,posY))
 
   # Rails don't do much 
   def update(self, timer):
@@ -109,6 +113,9 @@ class Wall(Entity):
     if self.health < 0:
       self.obj.remove()
 
+
+  # Need to make convex hulls or a heightmap
+  # so we can have bigger numbers of active physics objects
   def addToNode(self, pos):
     return
 
